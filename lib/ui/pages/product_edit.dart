@@ -54,6 +54,7 @@ class _EditProductPageState extends ConsumerState<EditProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[200],
       appBar: AppBar(title: const Text('Edit Product')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

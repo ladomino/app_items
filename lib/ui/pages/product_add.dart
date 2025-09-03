@@ -19,6 +19,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[200],
       appBar: AppBar(title: const Text('Add Product')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

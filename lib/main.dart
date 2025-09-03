@@ -1,4 +1,5 @@
-import 'package:app_items/ui/pages/product_list_page.dart';
+//import 'package:app_items/ui/pages/product_list_page.dart';
+import 'package:app_items/ui/pages/product_search_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,15 +19,25 @@ class InventoryApp extends StatelessWidget {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  ThemeData _createTheme(Brightness brightness) {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      fontFamily: 'Times New Roman', 
+    );
+  }
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Inventory App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: ProductListPage(),
+      title: 'Product App',
+      theme: _createTheme(Brightness.light),
+      darkTheme: _createTheme(Brightness.dark),
+      themeMode: ThemeMode.system, 
+      //home: ProductListPage(),
+      home: ProductSearchListPage(),
     );
   }
 }

@@ -8,8 +8,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ProductTile extends ConsumerWidget {
   final Product product;
+  final int index;
 
-  const ProductTile({super.key, required this.product});
+  const ProductTile({super.key, required this.product, required this.index});
 
   // @override
   // Widget build(BuildContext context) {
@@ -34,6 +35,11 @@ class ProductTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Alternate between two colors based on index
+    final backgroundColor = index.isEven 
+        ? Colors.blueGrey[50] 
+        : Colors.blueGrey[100];
+
     return Slidable(
       key: ValueKey(product.id),
       endActionPane: ActionPane(
@@ -58,8 +64,8 @@ class ProductTile extends ConsumerWidget {
                       TextButton(
                         onPressed: () {
                           ref
-                            .read(productCollectionProvider.notifier)
-                            .delete(product.id);
+                              .read(productCollectionProvider.notifier)
+                              .delete(product.id);
                           Navigator.of(context).pop();
                         },
                         child: const Text('Delete'),
@@ -76,20 +82,23 @@ class ProductTile extends ConsumerWidget {
           ),
         ],
       ),
-      child: ListTile(
-        title: Text(product.name),
-        subtitle: Text(
-          'Qty: ${product.quantity} • \$${product.price.toStringAsFixed(2)}',
+      child: Container(
+        color: backgroundColor,
+        child: ListTile(
+          title: Text(product.name),
+          subtitle: Text(
+            'Qty: ${product.quantity} • \$${product.price.toStringAsFixed(2)}',
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    EditProductPage(key: ValueKey(product.id), product: product),
+              ),
+            );
+          },
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  EditProductPage(key: ValueKey(product.id), product: product),
-            ),
-          );
-        },
       ),
     );
   }
