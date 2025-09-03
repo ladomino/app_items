@@ -11,10 +11,43 @@ class AddProductPage extends ConsumerStatefulWidget {
 
 class _AddProductPageState extends ConsumerState<AddProductPage> {
   final _formKey = GlobalKey<FormState>();
-  String _name = '';
-  int _quantity = 0;
-  double _price = 0;
-  String _description = '';
+  
+  // Use TextEditingControllers for better form management
+  late final TextEditingController _nameController;
+  late final TextEditingController _quantityController;
+  late final TextEditingController _priceController;
+  late final TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _quantityController = TextEditingController();
+    _priceController = TextEditingController();
+    _descriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // Properly dispose of controllers to prevent memory leaks
+    _nameController.dispose();
+    _quantityController.dispose();
+    _priceController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  void _saveProduct() {
+    if (_formKey.currentState!.validate()) {
+      final name = _nameController.text;
+      final quantity = int.parse(_quantityController.text);
+      final price = double.parse(_priceController.text);
+      final description = _descriptionController.text;
+
+      ref.read(productCollectionProvider.notifier).add(name, quantity, price, description);
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,36 +61,30 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           child: Column(
             children: [
               TextFormField(
+                controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) => value!.isEmpty ? 'Enter name' : null,
-                onSaved: (val) => _name = val!,
               ),
               TextFormField(
+                controller: _quantityController,
                 decoration: const InputDecoration(labelText: 'Quantity'),
                 keyboardType: TextInputType.number,
                 validator: (value) => int.tryParse(value!) == null ? 'Enter valid number' : null,
-                onSaved: (val) => _quantity = int.parse(val!),
               ),
               TextFormField(
+                controller: _priceController,
                 decoration: const InputDecoration(labelText: 'Price'),
                 keyboardType: TextInputType.number,
                 validator: (value) => double.tryParse(value!) == null ? 'Enter valid price' : null,
-                onSaved: (val) => _price = double.parse(val!),
               ),
               TextFormField(
+                controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Description (optional)'),
-                onSaved: (val) => _description = val ?? '',
+                maxLines: 3,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-
-                    ref.read(productCollectionProvider.notifier).add(_name, _quantity, _price, _description);
-                    Navigator.pop(context);
-                  }
-                },
+                onPressed: _saveProduct,
                 child: const Text('Save'),
               ),
             ],
